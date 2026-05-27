@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: janus-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: janus
+      POSTGRES_USER: janus
+      POSTGRES_PASSWORD: janus
+    ports:
+      - "5432:5432"
+    volumes:
+      - janus-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U janus -d janus"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # 로컬 개발: `docker compose up -d postgres`
+  # 운영 배포 시 활성화: `docker compose --profile app up -d`
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: janus-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/janus
+      SPRING_DATASOURCE_USERNAME: janus
+      SPRING_DATASOURCE_PASSWORD: janus
+    ports:
+      - "8080:8080"
+    profiles:
+      - app
+
+volumes:
+  janus-postgres-data:
