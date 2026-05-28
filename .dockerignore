@@ -1,0 +1,33 @@
+# Build / Cache
+.gradle/
+build/
+out/
+bin/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+
+# Tests / Docs
+HELP.md
+*.md
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Logs / Env
+*.log
+*.env
+*.env.local
+.env.*.local
